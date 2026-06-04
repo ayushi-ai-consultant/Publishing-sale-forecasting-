@@ -1,0 +1,488 @@
+{
+  "name": "Ayush.3.1",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -208
+      ],
+      "id": "9c14ea20-019f-4d75-924c-41e975118eee",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "=US federal holidays near {{$json.release_date}}"
+            },
+            {
+              "name": "api_key",
+              "value": "7960458d7231858baf19427ecbe5d00ce419bcfe05744a3c74352c39148809e7"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -304
+      ],
+      "id": "621324dc-45f7-4221-8692-033dcb84690c",
+      "name": "Search Holidays"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "=major {{$json.genre}} book releases around {{$json.release_date}}"
+            },
+            {
+              "name": "api_key",
+              "value": "7960458d7231858baf19427ecbe5d00ce419bcfe05744a3c74352c39148809e7"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "d250e410-381d-48f3-b2ad-acec0320abcf",
+      "name": "Search Competition"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayushmishra0813@gmail.com",
+        "subject": "=Book Release Analysis ({{ $json.output.overall_release_timing_score }}/100) - {{ $('Fields').first().json.title }}\n\n",
+        "message": "=<h2>📚 Book Release Timing Analysis</h2>\n\n<p><strong>Title:</strong> {{ $('Fields').first().json.title }}</p>\n<p><strong>Genre:</strong> {{ $('Fields').first().json.genre }}</p>\n<p><strong>Release Date:</strong> {{ $('Fields').first().json.release_date }}</p>\n\n<hr>\n\n<h3>📊 Overall Assessment</h3>\n\n<p><strong>Overall Release Timing Score:</strong> {{ $json.output.overall_release_timing_score }}/100</p>\n\n<p><strong>Opportunity Level:</strong> {{ $json.output.opportunity_level }}</p>\n\n<p><strong>Risk Level:</strong> {{ $json.output.risk_level }}</p>\n\n<hr>\n\n<h3>📅 Priority Holidays</h3>\n\n<ul>\n\n<li>\n<strong>{{ $json.output.nearby_holidays[0].holiday_name }}</strong>\n( {{ $json.output.nearby_holidays[0].priority }} )<br>\n{{ $json.output.nearby_holidays[0].reason }}\n</li>\n\n<li>\n<strong>{{ $json.output.nearby_holidays[1].holiday_name }}</strong>\n( {{ $json.output.nearby_holidays[1].priority }} )<br>\n{{ $json.output.nearby_holidays[1].reason }}\n</li>\n\n<li>\n<strong>{{ $json.output.nearby_holidays[2].holiday_name }}</strong>\n( {{ $json.output.nearby_holidays[2].priority }} )<br>\n{{ $json.output.nearby_holidays[2].reason }}\n</li>\n\n</ul>\n\n<hr>\n\n<h3>📖 Example Competing Titles</h3>\n\n<ul>\n\n<li>\n<strong>{{ $json.output.example_competitors[0].title }}</strong><br>\n{{ $json.output.example_competitors[0].reason }}\n</li>\n\n<li>\n<strong>{{ $json.output.example_competitors[1].title }}</strong><br>\n{{ $json.output.example_competitors[1].reason }}\n</li>\n\n<li>\n<strong>{{ $json.output.example_competitors[2].title }}</strong><br>\n{{ $json.output.example_competitors[2].reason }}\n</li>\n\n</ul>\n\n<hr>\n\n<h3>🏆 Major Sports Events</h3>\n\n<ul>\n\n<li>\n<strong>{{ $json.output.major_sports_events[0].event_name }}</strong>\n( {{ $json.output.major_sports_events[0].priority }} )<br>\n{{ $json.output.major_sports_events[0].impact }}\n</li>\n\n<li>\n<strong>{{ $json.output.major_sports_events[1].event_name }}</strong>\n( {{ $json.output.major_sports_events[1].priority }} )<br>\n{{ $json.output.major_sports_events[1].impact }}\n</li>\n\n<li>\n<strong>{{ $json.output.major_sports_events[2].event_name }}</strong>\n( {{ $json.output.major_sports_events[2].priority }} )<br>\n{{ $json.output.major_sports_events[2].impact }}\n</li>\n\n<li>\n<strong>{{ $json.output.major_sports_events[3].event_name }}</strong>\n( {{ $json.output.major_sports_events[3].priority }} )<br>\n{{ $json.output.major_sports_events[3].impact }}\n</li>\n\n</ul>\n\n<hr>\n\n<h3>✅ Final Recommendation</h3>\n\n<p>{{ $json.output.final_recommendation }}</p>\n\n<h3>📋 Executive Summary</h3>\n\n<p>{{ $json.output.executive_summary }}</p>\n\n<hr>\n\n<p>\n<em>\nThis release timing assessment is based on holiday proximity, competitive releases, major sports events, and market visibility factors relevant to the U.S. publishing market.\n</em>\n</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        -432
+      ],
+      "id": "60d5f6fa-c223-4e78-983c-eff6cbc2caec",
+      "name": "Send a message",
+      "webhookId": "9c78af77-208f-4dc4-8231-c2393720d368",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7EzFjelldsbttlYf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c4aab37b-75f0-4375-b756-939aa8db952f",
+              "name": "title",
+              "value": "No Dumb Questions",
+              "type": "string"
+            },
+            {
+              "id": "23046251-5513-4255-9f5b-894f4be0c75e",
+              "name": "genre",
+              "value": "Drama",
+              "type": "string"
+            },
+            {
+              "id": "59619ed0-777e-4713-aa16-e8eab3c8570e",
+              "name": "target_market",
+              "value": "USA",
+              "type": "string"
+            },
+            {
+              "id": "eba27231-a518-48c2-b85a-e6c9f6bc5307",
+              "name": "release_date",
+              "value": "2026-06-02",
+              "type": "string"
+            },
+            {
+              "id": "749c80cf-4d1d-4547-a07a-9476fe2ce050",
+              "name": "author",
+              "value": "Jason Kelce and Travis Kelce",
+              "type": "string"
+            },
+            {
+              "id": "77cd6c83-440d-4138-9283-4733ec88eb95",
+              "name": "publisher",
+              "value": "William Morrow",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -336,
+        -208
+      ],
+      "id": "01a15043-082a-43c3-84f8-45121202adff",
+      "name": "Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "=major US sports events around {{ $('Fields').item.json.release_date }}"
+            },
+            {
+              "name": "api_key",
+              "value": "7960458d7231858baf19427ecbe5d00ce419bcfe05744a3c74352c39148809e7"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        96
+      ],
+      "id": "7a5850e1-3b76-433b-85e2-fa93a5f17109",
+      "name": "Search Sports Events"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=BOOK DETAILS\n\nTitle:\n{{ $('Fields').first().json.title }}\n\nAuthor:\n{{ $('Fields').first().json.author }}\n\nGenre:\n{{ $('Fields').first().json.genre }}\n\nRelease Date:\n{{ $('Fields').first().json.release_date }}\n\nMERGED SEARCH DATA\n\n{{ JSON.stringify($json) }}\n\nTASK\n\nRELEASE TIMING ANALYSIS\n\n1. Identify the nearest major U.S. holiday.\n2. Assign a holiday score (0-20).\n\n3. Return EXACTLY 3 nearby holidays.\n\nFor each holiday provide:\n- holiday_name\n- priority\n- reason (max 20 words)\n\n4. Analyze release competition.\n\n5. Return EXACTLY 4 competing books.\n\nFor each competitor provide:\n- title\n- reason (max 15 words)\n\n6. Assign competition score (0-20).\n7. Determine competition level.\n\n8. Analyze sports events occurring within 14 days of release.\n\n9. Return EXACTLY 4 sports events.\n\nFor each sports event provide:\n- event_name\n- priority\n- impact (max 20 words)\n\n10. Assign sports score (0-20).\n\n11. Calculate:\n- overall_release_timing_score (0-100)\n- opportunity_level\n- risk_level\n\nSALES FORECAST ANALYSIS\n\n12. Evaluate author popularity.\n\nReturn:\n- author_popularity_score (0-20)\n- popularity_level\n\n13. Estimate market demand.\n\nReturn:\n- market_demand_score (0-20)\n- sell_through_potential\n\n14. Return EXACTLY 3 comparable titles.\n\nFor each title provide:\n- title\n- reason (max 15 words)\n\n15. Estimate:\n- sales_potential\n- forecast_confidence\n\n16. Estimate first-year sales:\n- low\n- expected\n- high\n\n17. Provide:\n- final_recommendation (max 50 words)\n- executive_summary (max 40 words)\n- forecast_analysis (max 80 words)\n\nIMPORTANT\n\nUse concise outputs.\nDo not repeat information.\nReturn ONLY valid JSON.\nNo markdown.\nNo explanations.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a senior publishing market analyst specializing in U.S. book launches, market timing, and sales forecasting.  Analyze:  - Holiday timing - Release competition - Major sports events - Author popularity - Comparable books - Market demand - Sales potential  Provide realistic publishing recommendations and sales forecasts.  Return ONLY valid JSON matching the required schema."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        896,
+        -384
+      ],
+      "id": "20159ffa-429b-444f-9125-7f85a9fa4800",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        976,
+        -208
+      ],
+      "id": "2354da0b-d642-4c21-86e1-1cf4009b681d",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "9X7ULQmZ3e5TAgtI",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        672,
+        -400
+      ],
+      "id": "0aafbfff-fef3-47d7-a8ca-680ac2cb1372",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"nearest_holiday\": \"\",\n  \"holiday_score\": 0,\n\n  \"nearby_holidays\": [\n    {\n      \"holiday_name\": \"\",\n      \"priority\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"holiday_name\": \"\",\n      \"priority\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"holiday_name\": \"\",\n      \"priority\": \"\",\n      \"reason\": \"\"\n    }\n  ],\n\n  \"competition_level\": \"\",\n  \"competition_score\": 0,\n\n  \"example_competitors\": [\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    }\n  ],\n\n  \"sports_score\": 0,\n\n  \"major_sports_events\": [\n    {\n      \"event_name\": \"\",\n      \"priority\": \"\",\n      \"impact\": \"\"\n    },\n    {\n      \"event_name\": \"\",\n      \"priority\": \"\",\n      \"impact\": \"\"\n    },\n    {\n      \"event_name\": \"\",\n      \"priority\": \"\",\n      \"impact\": \"\"\n    },\n    {\n      \"event_name\": \"\",\n      \"priority\": \"\",\n      \"impact\": \"\"\n    }\n  ],\n\n  \"overall_release_timing_score\": 0,\n  \"opportunity_level\": \"\",\n  \"risk_level\": \"\",\n\n  \"author_popularity_score\": 0,\n  \"popularity_level\": \"\",\n\n  \"market_demand_score\": 0,\n  \"sell_through_potential\": \"\",\n\n  \"comparable_titles\": [\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    },\n    {\n      \"title\": \"\",\n      \"reason\": \"\"\n    }\n  ],\n\n  \"sales_potential\": \"\",\n  \"forecast_confidence\": \"\",\n\n  \"estimated_first_year_sales\": {\n    \"low\": 0,\n    \"expected\": 0,\n    \"high\": 0\n  },\n\n  \"final_recommendation\": \"\",\n  \"executive_summary\": \"\",\n  \"forecast_analysis\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1120,
+        -192
+      ],
+      "id": "5191865a-1338-427e-bb71-61938907639e",
+      "name": "Structured Output Parser",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Fields').first().json.author }} author books sales popularity"
+            },
+            {
+              "name": "num",
+              "value": "10"
+            },
+            {
+              "name": "api_key",
+              "value": "7960458d7231858baf19427ecbe5d00ce419bcfe05744a3c74352c39148809e7"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -112,
+        -512
+      ],
+      "id": "3b3823bd-02ab-4394-aa18-d27a4095a0e3",
+      "name": "Search Author Popularity"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Fields').first().json.genre }} bestselling books 2025 2026"
+            },
+            {
+              "name": "api_key",
+              "value": "7960458d7231858baf19427ecbe5d00ce419bcfe05744a3c74352c39148809e7"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -128,
+        -704
+      ],
+      "id": "2138b04e-aae1-42fc-b32e-adc339438339",
+      "name": "Search Comparable Books"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Holidays": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Search Competition": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Fields": {
+      "main": [
+        [
+          {
+            "node": "Search Holidays",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Competition",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Sports Events",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Author Popularity",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Comparable Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Sports Events": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Author Popularity": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Search Comparable Books": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c85ed519-dec5-46f2-8df8-24fbbdaf7a9e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f400092abe612348860e52985d232dde7a998532bf2ecdd057316a20e28ff33d"
+  },
+  "id": "TKr8m05ADHQVIoiU",
+  "tags": []
+}
