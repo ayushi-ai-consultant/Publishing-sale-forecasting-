@@ -1,0 +1,430 @@
+{
+  "name": "ayushi holiday workflowss",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "=US federal holidays near  {{ $json.Date }}"
+            },
+            {
+              "name": "api-key",
+              "value": "06c2353686d9eb3634d8c4b336e4eb30b1ad31c4a4a31e1c1d418c08510bbb5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        32,
+        -128
+      ],
+      "id": "cc1a8c88-bb46-4628-84c9-c1bc1b408208",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "oWebOv3js0ohw8yX",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "ayushimishra5069@gmail.com",
+        "subject": "Children Book Release Analysis Report",
+        "message": "=<h2>Book Analysis</h2>\n\n<p>Sales Forecast: {{ $json.output.expected_sales }}</p>\n\n<p>Confidence: {{ $json.output.confidence_level }}</p>\n\n<p>Opportunities: {{ $json.output.opportunities }}</p>\n\n<p>Risks: {{ $json.output.risks }}</p>\n\n<p>Recommendation: {{ $json.output.recommendation }}</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "852b0dff-de4c-41b2-b382-5d4aea8b7eaf",
+      "name": "Send a message",
+      "webhookId": "71cece4c-cc7c-4310-b4ab-9af79d020c4d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7EzFjelldsbttlYf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Fields').first().json.genre }} book sales trends"
+            },
+            {
+              "name": "api_key",
+              "value": "06c2353686d9eb3634d8c4b336e4eb30b1ad31c4a44a31e1c1d418c08510bbb5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        144
+      ],
+      "id": "088572f9-d78d-4ba2-a275-ec5e183cfcff",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "oWebOv3js0ohw8yX",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Fields').first().json.release_date }} book releases"
+            },
+            {
+              "name": "api_key",
+              "value": "06c2353686d9eb3634d8c4b336e4eb30b1ad31c4a44a31e1c1d418c08510bbb5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        160,
+        352
+      ],
+      "id": "a40c3d23-fb51-4f8a-8199-8c1ca99b6eb7",
+      "name": "HTTP Request2",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "oWebOv3js0ohw8yX",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Book Release Analyzer",
+        "formDescription": "Enter a book title to analyze the best release date.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "release_ date"
+            },
+            {
+              "fieldLabel": "title"
+            },
+            {
+              "fieldLabel": "genre"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -304,
+        176
+      ],
+      "id": "16b2fd30-870f-4716-9129-61316b504385",
+      "name": "Fields",
+      "webhookId": "7ff04b9d-7f1d-440a-af1a-dee807ac593b"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 4,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        496,
+        32
+      ],
+      "id": "4b6289ef-77e3-444d-8116-8dcc0f33fd9e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a senior U.S. publishing market analyst.\n\nBOOK DETAILS\n\nTitle:\n{{ $('Fields').first().json.title }}\n\nGenre:\n{{ $('Fields').first().json.genre }}\n\nRelease Date:\n{{ $('Fields').first().json['release_ date'] }}\n\nAVAILABLE RESEARCH DATA\n\nHoliday Search:\n{{ JSON.stringify($json.organic_results || []) }}\n\nGenre Trend Search:\n{{ JSON.stringify($json.organic_results || []) }}\n\nRelease Timing Search:\n{{ JSON.stringify($json.organic_results || []) }}\n\nAuthor Popularity Search:\n{{ JSON.stringify($json.organic_results || []) }}\n\nTASK\n\nAnalyze the book launch potential using:\n\n1. Author popularity and visibility\n2. Genre sales trends\n3. Release timing\n4. Market opportunities\n5. Potential risks\n\nIMPORTANT\n\nReturn ONLY valid JSON.\n\nWord Limits:\n\n- expected_sales: maximum 15 words\n- confidence_level: only High, Medium, or Low\n- opportunities: maximum 15 words\n- risks: maximum 15 words\n- recommendation: maximum 15 words\n\nDo not exceed these limits.\n\n\nProvide:\n\n- Whether the author appears identifiable online\n- Estimated sales potential\n- Confidence level\n- Main opportunity\n- Main risk\n- Final recommendation\n\nIMPORTANT\n\nReturn ONLY valid JSON.\n\nUse this exact format:\n\n{\n  \"author_identified\": true,\n  \"expected_sales\": \"\",\n  \"confidence_level\": \"\",\n  \"opportunities\": \"\",\n  \"risks\": \"\",\n  \"recommendation\": \"\"\n}\n\nRules:\n\n- author_identified must be true or false\n- confidence_level must be High, Medium, or Low\n- expected_sales must be one short sentence\n- opportunities must be one short sentence\n- risks must be one short sentence\n- recommendation must be one short sentence\n- Do not return markdown\n- Do not return explanations outside JSON",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        752,
+        112
+      ],
+      "id": "701787dd-c1dd-4be8-9102-105c8924aef7",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "gpt-5.4",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        736,
+        368
+      ],
+      "id": "36da6e5c-8f0c-4a80-8e47-57410e1b3141",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "9X7ULQmZ3e5TAgtI",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"author_identified\": {\n      \"type\": \"boolean\"\n    },\n    \"expected_sales\": {\n      \"type\": \"string\",\n      \"maxLength\": 100\n    },\n    \"confidence_level\": {\n      \"type\": \"string\",\n      \"enum\": [\"High\", \"Medium\", \"Low\"]\n    },\n    \"opportunities\": {\n      \"type\": \"string\",\n      \"maxLength\": 100\n    },\n    \"risks\": {\n      \"type\": \"string\",\n      \"maxLength\": 100\n    },\n    \"recommendation\": {\n      \"type\": \"string\",\n      \"maxLength\": 100\n    }\n  },\n  \"required\": [\n    \"author_identified\",\n    \"expected_sales\",\n    \"confidence_level\",\n    \"opportunities\",\n    \"risks\",\n    \"recommendation\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        320
+      ],
+      "id": "ad4ff6a0-6f6b-4ed5-96be-946956452667",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Fields').first().json.title }} author popularity "
+            },
+            {
+              "name": "api_key",
+              "value": "06c2353686d9eb3634d8c4b336e4eb30b1ad31c4a44a31e1c1d418c08510bbb5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        608
+      ],
+      "id": "d528fe00-3474-499a-aeeb-387d21c5c3e0",
+      "name": "HTTP Request3",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "oWebOv3js0ohw8yX",
+          "name": "Query Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Fields": [
+      {
+        "json": {
+          "release_ date": "2 June 2026",
+          "title": "No Dumb Questions",
+          "genre": "Drama",
+          "submittedAt": "2026-06-03T07:50:26.019-04:00",
+          "formMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6276221d-f446-4532-ad41-fe50927971fb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f400092abe612348860e52985d232dde7a998532bf2ecdd057316a20e28ff33d"
+  },
+  "id": "xmLW6eSwGsRRugS6",
+  "tags": []
+}
